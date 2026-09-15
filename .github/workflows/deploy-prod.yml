@@ -1,0 +1,25 @@
+name: Deploy Prod
+
+on:
+  push:
+    branches:
+      - hostinger-prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Hostinger VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd synzy/Backend-TC-SA-v2
+            git checkout hostinger-prod
+            git pull origin hostinger-prod
+            npm i
+            pm2 reload school-api
+            pm2 save

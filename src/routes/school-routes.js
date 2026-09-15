@@ -62,6 +62,7 @@ import {
 } from "../controllers/blog-controllers.js";
 import {
   addAdmissionTimeline,
+  getApplicationFee,
   getAdmissionTimelineById,
   updateAdmissionTimeline
 } from '../controllers/admission-timeline-controllers.js';
@@ -84,8 +85,10 @@ router.get('/schools/nearby', getNearbySchools);
 router.get("/count", getStudentsCount);
 router.get('/schools/:id', getSchoolById);
 router.put('/schools/:id', updateSchoolInfo);
+router.put('/schools/auth/:id', updateSchoolInfo);
 router.delete('/schools/:id', deleteSchool);
-router.post('/schools/:authId', addSchoolByAuth);    // create and attach authId
+router.post('/schools/:authId', addSchoolByAuth);
+router.post('/schools/auth/:authId', addSchoolByAuth);
 router.get('/schools/auth/:authId', getSchoolByAuthId);
 
 
@@ -160,8 +163,10 @@ router.put('/schools/faculty/:id', updateFaculty);
 
 //admission-timeline
 router.post('/schools/admission-timeline/', addAdmissionTimeline);
+router.get('/schools/admission-timeline/application-fee/:schoolId/:admissionLevel', getApplicationFee);
 router.get('/schools/admission-timeline/:id', getAdmissionTimelineById);
 router.put('/schools/admission-timeline/:id', updateAdmissionTimeline);
+
 
 //admin
 router.post('/admin-login', adminLogin);

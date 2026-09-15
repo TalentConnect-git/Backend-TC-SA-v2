@@ -1,20 +1,41 @@
 import admin from "firebase-admin";
 import { getApps, getApp } from "firebase-admin/app";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const serviceAccount = JSON.parse(process.env.FCM_SERVER_KEY);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Check if an app already exists
-const app = getApps().length === 0
-  ? admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  })
-  : getApp();
+let serviceAccount = null;
+try {
+  const filePath = path.join(__dirname, "../../config/firebase-service-account.json");
+  if (fs.existsSync(filePath)) {
+    serviceAccount = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } else if (process.env.FCM_SERVER_KEY) {
+    serviceAccount = JSON.parse(process.env.FCM_SERVER_KEY);
+  }
+} catch (err) {
+  console.warn("Firebase credential loading warning:", err.message);
+}
+
+if (serviceAccount && getApps().length === 0) {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  } catch (initErr) {
+    console.warn("Firebase initialization warning:", initErr.message);
+  }
+}
 
 export const pushNotification = async ({ deviceToken, topic, condition, title, body }) => {
   try {
+    if (getApps().length === 0) {
+      console.warn("Push Notification Skipped: Firebase app is not initialized.");
+      return null;
+    }
+
     const hasToken = deviceToken && typeof deviceToken === 'string' && deviceToken.trim() !== '' && deviceToken !== 'null' && deviceToken !== 'undefined';
     const hasTopic = topic && typeof topic === 'string' && topic.trim() !== '';
     const hasCondition = condition && typeof condition === 'string' && condition.trim() !== '';
@@ -23,7 +44,7 @@ export const pushNotification = async ({ deviceToken, topic, condition, title, b
 
     if (targetCount !== 1) {
       console.warn("Push Notification Skipped: Exactly one of topic, token or condition is required.");
-      return;
+      return null;
     }
 
     const message = {

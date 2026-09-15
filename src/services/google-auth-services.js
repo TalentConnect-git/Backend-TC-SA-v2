@@ -128,3 +128,7 @@ export const handleGoogleAuthService = async (tokenId, accountType = 'school_use
 
   return { auth: existingAuth, token };
 };
+
+export const handleWebGoogleAuthService = async (tokenId, userType, action = null) => {
+  return handleGoogleAuthService(tokenId, userType, action);
+};

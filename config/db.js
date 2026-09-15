@@ -2,8 +2,7 @@
 import mongoose from "mongoose";
 import config from "config";
 import dotenv from 'dotenv';
-///TODO: REMOVE
-import { seedDatabase } from "../src/utils/seeder.js";
+
 dotenv.config();
 
 const mongodbUrl = process.env.MONGODB_URL || config.get("mongodb.url");
@@ -14,7 +13,7 @@ const connectDB = async () => {
         await mongoose.connect(mongodbUrl, {
             dbName: dbName
         });
-        console.log(`MongoDB connected to database: ${mongoose.connection.name}`);
+        console.log(`MongoDB connected to database: ${mongoose.connection.name || dbName}`);
         ///TODO: REMOVE
         //seedDatabase();
     } catch (error) {

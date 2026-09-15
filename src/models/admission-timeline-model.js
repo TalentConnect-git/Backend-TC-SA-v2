@@ -27,7 +27,7 @@ const TimelineEntrySchema = new mongoose.Schema({
     admissionLevel: {
       type: String,
       // You can add more levels here as needed, e.g., 'Grade 1-5'
-      enum: ['KGs', 'Grade 1 - 5', 'Grade 6-10'],
+      enum: ['kg','1','2','3','4','5','6','7','8','9','10','11'],
       required: true,
       description: "The grade level for which this admission timeline applies."
     },

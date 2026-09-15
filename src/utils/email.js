@@ -17,7 +17,7 @@ export const transporter = nodemailer.createTransport({
 });
 
 export const sendVerificationEmail = async ({ email, token }) => {
-  const verificationUrl = `https://backend-tc-sa-v2.onrender.com/api/auth/verify-email/${token}`;
+  const verificationUrl = `https://api.synzy.in/api/auth/verify-email/${token}`;
 
   const mailOptions = {
     from: `"TC-SA" <${process.env.EMAIL_USER}>`,

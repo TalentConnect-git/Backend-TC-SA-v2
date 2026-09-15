@@ -23,15 +23,37 @@ const FormSchema = new mongoose.Schema({
     ref: 'pdfs',
     required: true,
   },
+  
+  payment: {
+    type: String,
+    enum: ['Paid', 'Unpaid'],
+    default: 'Unpaid',
+  },
+
+  paymentInfo: {
+    orderId: { type: String, default: null },
+    paymentId: { type: String, default: null },
+    signature: { type: String, default: null },
+    status: {
+      type: String,
+      enum: ['created', 'authorized', 'captured', 'failed'],
+      default: 'created'
+    }
+  },
+
+  amount: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
-    enum: ['Pending', 'Reviewed', 'Accepted', 'Rejected', 'Interview'],
+    enum: ['Pending', 'Reviewed', 'Accepted', 'Rejected', 'Interview','WrittenExam'],
     default: 'Pending',
   },
   interviewNote: {
     type: String,
     default: null
-  }
+  },
 }, { timestamps: true });
 
 const Form = mongoose.model('forms', FormSchema);

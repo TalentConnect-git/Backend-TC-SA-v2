@@ -67,8 +67,14 @@ export const submitForm = async (req, res) => {
   try {
     const { formId, schoolId, studId } = req.params;
     const applicationId = req.body.applicationId || req.query.applicationId || null;
+    let amount = req.body.amount || null;
 
-    const data = await submitFormService(formId, schoolId, studId, applicationId);
+    if(amount === undefined || amount === null) {
+      amount = 0;
+      // return res.status(400).json({ status: "failed", message: "Amount is required to submit the form." });
+    }
+
+    const data = await submitFormService(formId, schoolId, studId, applicationId, amount);
     res.status(201).json({ status: "success", message: "Form submitted successfully", data });
   } catch (err) {
     res.status(err.status || 500).json({ status: "failed", message: err.message });
