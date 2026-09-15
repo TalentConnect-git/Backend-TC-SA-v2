@@ -15,6 +15,7 @@ router.post('/forgot-password/verify-otp', verifyOtpAndResetPassword);
 router.post('/reset-password', ensureAuthenticated, resetPassword);
 
 router.post('/google', googleAuth);
+router.post('/google-web', googleAuth);
 
 router.get('/verify-email/:token', verifyEmail);
 
