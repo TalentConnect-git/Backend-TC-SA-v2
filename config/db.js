@@ -6,13 +6,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const mongodbUrl = process.env.MONGODB_URL || config.get("mongodb.url");
-const DB_NAME = process.env.DB_NAME;
+const dbName = process.env.DB_NAME || 'synzy-prod';
+
 const connectDB = async () => {
     try {
         await mongoose.connect(mongodbUrl, {
-            dbName: DB_NAME
+            dbName: dbName
         });
-        console.log("MongoDB connected!");
+        console.log(`MongoDB connected to database: ${mongoose.connection.name || dbName}`);
         ///TODO: REMOVE
         //seedDatabase();
     } catch (error) {

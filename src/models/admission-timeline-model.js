@@ -15,9 +15,9 @@ const TimelineEntrySchema = new mongoose.Schema({
     enum: ['Ongoing', 'Ended', 'Starting Soon'],
     required: true
   },
-  applicationFee:{
+  applicationFee: {
     type: Number,
-    required:true
+    required: true
   },
   documentsRequired: {
     type: [String],

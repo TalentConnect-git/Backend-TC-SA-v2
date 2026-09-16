@@ -16,8 +16,8 @@ const ensureAuthenticated = async (req, res, next) => {
   } catch (err) {
 
     console.error("Error verifying access token:", err);
-      return res.status(403).json({ message: "Token is not valid or it's expired" });
-      
+    return res.status(403).json({ message: "Token is not valid or it's expired" });
+
   }
 };
 

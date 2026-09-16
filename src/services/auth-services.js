@@ -6,19 +6,32 @@ import mongoose from 'mongoose';
 import { createNotificationService } from './notification-services.js';
 import { pushNotification } from '../utils/send-notification.js';
 
-export const getAuth = async ({authId}) => {
+export const getAuth = async ({ authId }) => {
   const auth = await Auth.findById(new mongoose.Types.ObjectId(authId));
 
   if (!auth) {
     throw {
-        status: 404,
-        message: 'Auth data not found',
-      };
+      status: 404,
+      message: 'Auth data not found',
+    };
   }
   return { auth };
 };
 
-export const registerUserService = async ({ email, password, userType, authProvider, deviceToken }) => {
+export const registerUserService = async ({ email, password, userType, authProvider, deviceToken, accountType }) => {
+  if (!accountType || !['school_user', 'school'].includes(accountType)) {
+      throw { status: 400, message: 'Invalid account type for school portal.' };
+  }
+  if (userType && !['school', 'student', 'parent'].includes(userType)) {
+      throw { status: 400, message: 'Invalid user type for school portal.' };
+  }
+  if (accountType === 'school' && userType !== 'school') {
+      throw { status: 400, message: 'Invalid user type for school account.' };
+  }
+  if (accountType === 'school_user' && !['student', 'parent'].includes(userType)) {
+      throw { status: 400, message: 'Invalid user type for school user account.' };
+  }
+
   const existingAuth = await Auth.findOne({ email });
 
   if (existingAuth) {
@@ -49,21 +62,43 @@ export const registerUserService = async ({ email, password, userType, authProvi
   return { email, token };
 };
 
-export const loginUserService = async ({ email, password, deviceToken }) => {
+export const loginUserService = async ({ email, password, deviceToken, accountType }) => {
+  if (!accountType || !['school_user', 'school'].includes(accountType)) {
+      throw { status: 400, message: 'Invalid account type for school portal.' };
+  }
+
   const auth = await Auth.findOne({ email });
-  if (!auth) throw { status: 404, message: 'User not found' };
-  if (auth.password !== password) throw { status: 401, message: 'Incorrect password' };
+  if (!auth) throw { status: 401, message: 'Invalid credentials or account type.' };
+  if (auth.password !== password) throw { status: 401, message: 'Invalid credentials or account type.' };
   if (!auth.isEmailVerified) throw { status: 401, message: 'Please verify your email' };
 
-  const token = jwt.sign({ id: auth._id, email: auth.email }, process.env.SECRET, {
+  if (accountType === 'school') {
+      if (auth.userType !== 'school') {
+          throw { status: 401, message: 'Invalid credentials or account type.' };
+      }
+  } else if (accountType === 'school_user') {
+      if (auth.userType !== 'student' && auth.userType !== 'parent') {
+          throw { status: 401, message: 'Invalid credentials or account type.' };
+      }
+  }
+
+  const token = jwt.sign({ id: auth._id, email: auth.email, userType: auth.userType }, process.env.SECRET, {
     expiresIn: '30d',
   });
 
-  auth.deviceToken = deviceToken;
+  if (deviceToken === "null" || deviceToken === "undefined" || !deviceToken) {
+    auth.deviceToken = undefined;
+  } else {
+    auth.deviceToken = deviceToken;
+  }
   await auth.save();
 
   ///TODO: Remove this from server once going to production
-  const notification = await createNotificationService({title: 'Logged In', body: 'You have successfully logged in', authId: auth._id, notificationType: 'Others'});
+  try {
+    const notification = await createNotificationService({ title: 'Logged In', body: 'You have successfully logged in', authId: auth._id, notificationType: 'Others' });
+  } catch (error) {
+    console.warn("Notification failed, but login will proceed:", error.message);
+  }
   return { auth, token };
 };
 

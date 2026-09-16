@@ -18,8 +18,8 @@ export const createNotificationService = async ({ authId, title, body, path, not
   if (!auth) throw { status: 404, message: 'User not found for notification' };
   await newNotification.save();
 
-  console.log("device token",auth.deviceToken);
-  if(auth.deviceToken){
+  console.log("device token", auth.deviceToken);
+  if (auth.deviceToken) {
     await pushNotification({ deviceToken: auth.deviceToken, title: title, body: body });
   }
   return newNotification;

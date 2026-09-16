@@ -9,12 +9,12 @@ const StudentApplicationSchema = new mongoose.Schema({
   age: { type: Number },
   gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
   motherTongue: { type: String, required: true },
-  placeOfBirth: { type: String, default: null }, 
-  speciallyAbled: { type: Boolean, default: false }, 
-  standard:{type:String,required : true,enum: ['kg','1','2','3','4','5','6','7','8','9','10','11']},
+  placeOfBirth: { type: String, default: null },
+  speciallyAbled: { type: Boolean, default: false },
+  standard: { type: String, required: true, enum: ['kg', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'] },
   speciallyAbledType: {
-  type: String,
-  default: null
+    type: String,
+    default: null
   },
   nationality: { type: String, required: true },
   religion: { type: String, required: true },
@@ -27,7 +27,7 @@ const StudentApplicationSchema = new mongoose.Schema({
 
   // Last school/play school [if attended]
   lastSchoolName: { type: String, default: null },
-  classCompleted: { type: String, default: null }, 
+  classCompleted: { type: String, default: null },
   lastAcademicYear: { type: String, default: null },
   reasonForLeaving: { type: String, default: null },
   board: { type: String, default: null },
@@ -52,16 +52,16 @@ const StudentApplicationSchema = new mongoose.Schema({
   motherAadharNo: { type: String, required: true },
   motherEmail: { type: String, required: true },
 
-  relationshipStatus: { type: String, enum: ['Married', 'Divorced', 'Single Mother', 'Single Father', 'Widowed', 'Other'],   required: true},
+  relationshipStatus: { type: String, enum: ['Married', 'Divorced', 'Single Mother', 'Single Father', 'Widowed', 'Other'], required: true },
 
   // if divorced
-  guardianName: { type: String, default: null }, 
+  guardianName: { type: String, default: null },
   guardianContactNo: { type: String, default: null },
   guardianRelationToStudent: { type: String, default: null },
-  guardianQualification: { type: String, default: null},
-  guardianProfession: { type: String,default: null },
+  guardianQualification: { type: String, default: null },
+  guardianProfession: { type: String, default: null },
   guardianEmail: { type: String, default: null },
-  guardianAadharNo: { type: String,  default: null },
+  guardianAadharNo: { type: String, default: null },
 
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
@@ -75,8 +75,8 @@ const StudentApplicationSchema = new mongoose.Schema({
     className: String
   }],
 
-  homeLanguage: { type: String,  required: true },
-  yearlyBudget:  { type: String,  required: true }
+  homeLanguage: { type: String, required: true },
+  yearlyBudget: { type: String, required: true }
 
   // photo: { type: String, required: true },
   // dobCertificate: { type: String, required: true },

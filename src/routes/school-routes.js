@@ -17,7 +17,7 @@ import {
   getSchoolByAuthId,
   getSchoolVideo,
   getStudentsCount,
-
+  reverseGeocodeSchoolController,
 } from '../controllers/school-controllers.js';
 import {
   addTechnologyAdoption,
@@ -77,13 +77,17 @@ import { photoUpload, videoUpload, logoUpload } from '../../config/multer.js';
 const router = express.Router();
 
 // Schools
+router.get('/schools/reverse-geocode', reverseGeocodeSchoolController);
+router.get('/reverse-geocode', reverseGeocodeSchoolController);
 router.post('/schools/', addSchool);
 router.get('/schools/status/:status', getSchoolsByStatus);
 router.get('/schools/nearby', getNearbySchools);
 router.get("/count", getStudentsCount);
 router.get('/schools/:id', getSchoolById);
 router.put('/schools/:id', updateSchoolInfo);
+router.put('/schools/auth/:id', updateSchoolInfo);
 router.delete('/schools/:id', deleteSchool);
+router.post('/schools/:authId', addSchoolByAuth);
 router.post('/schools/auth/:authId', addSchoolByAuth);
 router.get('/schools/auth/:authId', getSchoolByAuthId);
 

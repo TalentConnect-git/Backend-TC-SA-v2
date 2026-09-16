@@ -2,13 +2,16 @@ import { handleGoogleAuthService, handleWebGoogleAuthService } from '../services
 
 export const googleAuth = async (req, res) => {
   try {
-    const { tokenId, userType } = req.body;
+    const { tokenId, accountType, userType, action } = req.body;
 
-    const { auth, token } = await handleGoogleAuthService(tokenId, userType);
+    const effectiveAccountType = accountType 
+      || (userType === 'school' ? 'school' : 'school_user');
+
+    const { auth, token } = await handleGoogleAuthService(tokenId, effectiveAccountType, action);
 
     res.status(200).json({
       status: 'success',
-      message: 'Login successful',
+      message: action === 'signup' ? 'Account created successfully' : 'Login successful',
       data: {
         auth,
         token,
@@ -25,20 +28,23 @@ export const googleAuth = async (req, res) => {
 
 export const googleWebAuth = async (req, res) => {
   try {
-    const { tokenId, userType } = req.body;
+    const { tokenId, accountType, userType, action } = req.body;
 
-    const { auth, token } = await handleWebGoogleAuthService(tokenId, userType);
+    const effectiveAccountType = accountType 
+      || (userType === 'school' ? 'school' : 'school_user');
+
+    const { auth, token } = await handleGoogleAuthService(tokenId, effectiveAccountType, action);
 
     res.status(200).json({
       status: 'success',
-      message: 'Login successful',
+      message: action === 'signup' ? 'Account created successfully' : 'Login successful',
       data: {
         auth,
         token,
       },
     });
   } catch (error) {
-    console.error('Google Auth Error:', error);
+    console.error('Google Web Auth Error:', error);
     res.status(error.status || 500).json({
       status: 'failed',
       message: error.message || 'Google authentication failed',
