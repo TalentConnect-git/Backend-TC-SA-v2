@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 import Auth from '../models/auth-model.js';
 import { googleClient } from '../utils/google-client.js';
+
+const bareGoogleClient = new OAuth2Client();
 
 export const handleGoogleAuthService = async (tokenId, accountType = 'school_user', action = null) => {
   if (!tokenId) {
@@ -27,10 +30,10 @@ export const handleGoogleAuthService = async (tokenId, accountType = 'school_use
     });
     payload = ticket.getPayload();
   } catch (verifyError) {
-    console.warn('Google verifyIdToken with audience list failed, trying direct verification:', verifyError.message);
+    console.warn('Google verifyIdToken with audience list failed, trying direct signature verification:', verifyError.message);
     try {
       // Direct verification fallback without audience restriction
-      const ticket = await googleClient.verifyIdToken({
+      const ticket = await bareGoogleClient.verifyIdToken({
         idToken: tokenId,
       });
       payload = ticket.getPayload();
