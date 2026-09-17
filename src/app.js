@@ -26,8 +26,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
-  "http://localhost:5173",   // Vite dev server
+  "http://localhost:5173",   // Vite dev server (Main)
   "http://127.0.0.1:5173",
+  "http://localhost:5174",   // Vite dev server (School)
+  "http://127.0.0.1:5174",
+  "http://localhost:5175",   // Vite dev server (College)
+  "http://127.0.0.1:5175",
   "https://synzy.in",
   "https://www.synzy.in",
   "https://school.synzy.in",
